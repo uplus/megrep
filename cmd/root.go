@@ -26,7 +26,7 @@ var rootCmd = &cobra.Command{
 }
 
 var wg sync.WaitGroup
-var option = Option{limit: 2, period: 100, stop: "hello", tail: 100}
+var option = Option{}
 
 func init() {
 	rootCmd.Flags().StringVarP(&option.stop, "stop", "s", "", "stop marker")
@@ -117,7 +117,7 @@ func outputRoutine(lineChannel chan string) {
 				_ = stdout.Flush()
 				count--
 
-				if stopRegexp.MatchString(line) {
+				if len(option.stop) != 0 && stopRegexp.MatchString(line) {
 					// 非同期で読み込みを待って、その間は read(10...) みたいにインクリメントして出力する
 
 					ttyChannel := make(chan string)
